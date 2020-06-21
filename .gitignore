@@ -221,6 +221,9 @@ pip-log.txt
 nbproject/
 nbproject/private/
 
+#Node
+node_modules/
+
 Call_of_Cthulhu_Spanish/Delta Green Variant
 /HollowEarthExpedition/hex_logo_r20.png
 /HollowEarthExpedition/HexSheetPreviewV3.cpt

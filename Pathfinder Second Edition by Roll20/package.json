@@ -1,0 +1,15 @@
+{
+  "name": "pathfinder-second-edition-by-roll20",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build.js",
+  "dependencies": {
+    "node-sass": "^4.14.1",
+    "pug": "^3.0.0",
+    "write-file-atomic": "^3.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "author": "",
+  "license": "ISC"
+}

@@ -770,6 +770,34 @@ div.sheet-character-info {
 	}
 }
 
+/* Roleplay, hero, and fate points */
+div.sheet-point-tracker {
+	display: flex;
+	justify-content: space-around;
+
+	input[name="attr_roleplay_points"],
+	input[name="attr_hero_points"],
+	input[name="attr_fate_points"]  {
+		font-size : 1em;
+		font-weight: bold;
+		height: 4em;
+		text-align: center;
+		width: 100%;
+	}
+
+	label[data-i18n-title="roleplay_points"],
+	label[data-i18n-title="hero_points"],
+	label[data-i18n-title="fate_points"] {
+		width: 5em;
+		text-align: center;
+
+		> span {
+			color: $focusblue;
+			font-size: 0.8em;
+		}
+	}
+}
+
 /* Character Details row */
 div.sheet-pfrow {
 	padding: 0px 0.5%;
@@ -786,13 +814,7 @@ div.sheet-column {
 		width           : 100%;
 	}
 
-	label[data-i18n-title="hero_points"] > span {
-		color: $focusblue;
-		font-size: 0.8em;
-	}
-
-	input[name="attr_level"],
-	input[name="attr_hero_points"]  {
+	input[name="attr_level"] {
 		font-size : 1em;
 		font-weight: bold;
 		height: 4em;
