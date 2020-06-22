@@ -230,7 +230,7 @@ var modPf2 = (function () {
     const sheetOpen = function(eventinfo) {
         // Initialization at first opening of sheet per the user game session
         if (global_sheet_init_done === 0) {
-            let update = {};
+            let update = { "fate_points": 1 };
             // completing global variables
                 // Attacks
             global_attributes_by_category["repeating_attacks"].forEach(category => {

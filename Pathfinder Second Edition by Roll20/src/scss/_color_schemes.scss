@@ -149,7 +149,9 @@ input.sheet-toggles[value*="color:neutral"] ~  {
             div.sheet-character-action,
             div.sheet-character-prof,
             h2[data-i18n="proficiency"],
-            label[data-i18n-title="hero_points"] > span {
+            label[data-i18n-title="roleplay_points"],
+            label[data-i18n-title="hero_points"],
+            label[data-i18n-title="fate_points"] > span {
                 color: $black;
             }
 

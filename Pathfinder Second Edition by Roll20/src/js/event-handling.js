@@ -105,6 +105,25 @@ on("change:roll_option_critical_damage", () => {
 on("change:level", (eventinfo) => {
     // console.table(eventinfo);
     modPf2.totalUpdate();
+    var c = eventinfo.newValue - eventinfo.previousValue;
+    getAttrs(["fate_points"], function(values) {
+        setAttrs({
+            "fate_points": Math.min(3, parseInt(values.fate_points) + c)
+        })
+    })
+});
+
+// === POINTS
+on('change:roleplay_points', (eventinfo) => {
+    setAttrs({ 'roleplay_points': Math.min(6, eventinfo.newValue) }, { 'silent': true });
+});
+
+['hero_points', 'fate_points'].forEach(attr => {
+    on(`change:${attr}`, (eventinfo) => {
+        var update = {};
+        update[attr] = Math.min(3, eventinfo.newValue);
+        setAttrs(update, { 'silent': true });
+    });
 });
 
 // === ABILITIES
