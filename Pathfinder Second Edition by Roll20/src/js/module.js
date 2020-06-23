@@ -30,7 +30,7 @@ var modPf2 = (function () {
         , "repeating_spells": ["cantrip","spellinnate","spellfocus","normalspells"]
         , "spell_types": ["cantrips","innate","focus","normalspells"]
         , "spells_fields": ["area","attack_checkbox","cast","cast_actions","cast_detail_information","cast_detail_label","current_level","damage_ability","damage_additional","damage_checkbox","damage_dice","damage_misc","damage_type","description","domain","duration","frequency","heightened","magic_tradition","name","npc_attack_checkbox","npc_saving_throw_select","range","save_critical_failure","save_critical_success","save_failure","save_success","save_type","saving_throw_select","school","spell_dc","spellattack","spellattack_ability","spellattack_misc","spellattack_rank","spelldc","spelldc_ability","spelldc_misc","spelldc_rank","spelllevel","target","toggles","traits","uses","uses_max"]
-        , "spells_fields_triggering": ["magic_tradition","damage_checkbox"]
+        , "spells_fields_triggering": ["magic_tradition","damage_checkbox","damage_dice","damage_additional"]
         , "spells_calculation_attributes": ["sheet_type","level","magic_tradition_arcane_proficiency","magic_tradition_primal_proficiency","magic_tradition_occult_proficiency","magic_tradition_divine_proficiency","spell_dc","spell_dc_key_ability","spell_attack_key_ability_select","spell_dc_temporary","spell_attack","spell_attack_key_ability","spell_attack_temporary","roll_option_critical_damage"]
         , "repeating_bulks": ["worn","readied","other"]
         , "bulks_fields": ["quantity","bulk"]
@@ -1009,14 +1009,31 @@ var modPf2 = (function () {
             update[`${id}_damage_dice`] = (parseInt(values[`${id}_damage_dice`]) || 0);
             if((parseInt(values[`${id}_damage_dice_size`].replace(/[^\d]/gi,"")) || 0)) {
                 update[`${id}_damage_dice_size`] = `D${parseInt(values[`${id}_damage_dice_size`].replace(/[^\d]/gi,""))}`;
+                update[`${id}_damage_die_max`] = parseInt(values[`${id}_damage_dice_size`].replace(/[^\d]/gi,""));
             } else {
                 update[`${id}_damage_dice_size`] = "D0";
+                update[`${id}_damage_die_max`] = 0;
             }
             let damage_dice = `${update[`${id}_damage_dice`]}${update[`${id}_damage_dice_size`]}`;
             let damage_bonus = damage_ability
                 + (parseInt(values[`${id}_damage_weapon_specialization`]) || 0)
                 + (parseInt(values[`${id}_damage_temporary`]) || 0)
                 + (parseInt(values[`${id}_damage_other`]) || 0);
+            // Calculate additional damage max
+            let template = values[`${id}_damage_additional`];
+            if(template) {
+                let additionalCritical = template.replace(/\[\[/g, '[[(').replace(/\]\]/g, ')*2]]');
+                let additionalMassiveCritical = template.replace(/\[\[.+?\]\]/g, match => {
+                    let str = match.substr(2, match.length -4);
+                    return '[[' + str.replace(/[dD]/, '*') + '+' + str + ']]'
+                });
+                update[`${id}_damage_additional_critical`] = additionalCritical;
+                update[`${id}_damage_additional_massive_critical`] = additionalMassiveCritical;
+            }
+            else {
+                update[`${id}_damage_additional_critical`] = "";
+                update[`${id}_damage_additional_massive_critical`] = "";
+            }
             // Attack display
             update[`${id}_weapon_display`] = `${update[`${id}_weapon_proficiency_display`] || ""} ${weapon_strike < 0 ? "" : "+"}${weapon_strike}${(values[`${id}_weapon_traits`] || "").length ? " ("+values[`${id}_weapon_traits`]+")" : ""}`.trim();
             // Damage display
@@ -1220,6 +1237,8 @@ var modPf2 = (function () {
         console.log(`%c Update spell ${attr}`, "color:purple;font-size:14px;");
         let fields = global_attributes_by_category["spells_calculation_attributes"];
         fields.push(`${row}magic_tradition`);
+        fields.push(`${row}damage_dice`);
+        fields.push(`${row}damage_additional`);
         getAttrs(fields, (values) => {
             setAttrs(calcSpell(row,values), {silent: true}, () => {
                 if(callback) {
@@ -1254,19 +1273,48 @@ var modPf2 = (function () {
                 + (parseInt(values[`spell_dc_temporary`]) || 0);
             }
         }
+        update[`${row}damage_dice_max`] = values[`${row}damage_dice`].replace(/[dD]/g, '*');
+
+        let template = values[`${row}damage_additional`];
+        if(template) {
+            let additionalCritical = template.replace(/\[\[/g, '[[(').replace(/\]\]/g, ')*2]]');
+            let additionalMassiveCritical = template.replace(/\[\[.+?\]\]/g, match => {
+                let str = match.substr(2, match.length -4);
+                return '[[' + str.replace(/[dD]/, '*') + '+' + str + ']]'
+            });
+            update[`${row}damage_additional_critical`] = additionalCritical;
+            update[`${row}damage_additional_massive_critical`] = additionalMassiveCritical;
+        }
+        else {
+            update[`${row}damage_additional_critical`] = " ";
+            update[`${row}damage_additional_massive_critical`] = " ";
+        }
         // critical damage roll option
         switch (values["roll_option_critical_damage"] || "auto") {
             case "none":
-                update[`${row}roll_critical_damage`] = " "; // no critical damage roll
+                // no critical damage roll
+                update[`${row}roll_critical_damage`] = " ";
+                update[`${row}roll_massive_critical_damage`] = " ";
+                update[`${row}roll_damage_additional_critical`] = " ";
+                update[`${row}roll_damage_additional_massive_critical`] = " ";
                 break
             case "button":
                 update[`${row}roll_critical_damage`] = "@{roll_critical_damage_button}"; // chat button
+                update[`${row}roll_massive_critical_damage`] = "@{damage_massive_critical_roll}";
+                update[`${row}roll_damage_additional_critical`] = "@{damage_additional_critical_roll}";
+                update[`${row}roll_damage_additional_massive_critical`] = "@{damage_additional_massive_critical_roll}";
                 break
             case "auto":
                 update[`${row}roll_critical_damage`] = "@{damage_critical_roll}"; // auto roll critical damage
+                update[`${row}roll_massive_critical_damage`] = "@{damage_massive_critical_roll}";
+                update[`${row}roll_damage_additional_critical`] = "@{damage_additional_critical_roll}";
+                update[`${row}roll_damage_additional_massive_critical`] = "@{damage_additional_massive_critical_roll}";
                 break
             default:
                 update[`${row}roll_critical_damage`] = "@{damage_critical_roll}"; // auto roll critical damage
+                update[`${row}roll_massive_critical_damage`] = "@{damage_massive_critical_roll}";
+                update[`${row}roll_damage_additional_critical`] = "@{damage_additional_critical_roll}";
+                update[`${row}roll_damage_additional_massive_critical`] = "@{damage_additional_massive_critical_roll}";
         }
         return update;
     };
