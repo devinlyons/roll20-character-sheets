@@ -1371,15 +1371,26 @@
         <input name='attr_damage_display' type='hidden' value='0' />
         <input name='attr_damage_info' type='hidden' value='' />
         <input name='attr_damage_dice_query' type='hidden' value='@{damage_dice}' />
+        <input name='attr_damage_dice_size_num' type='hidden' value='@{damage_dice_size_num}' />
+        <input name='attr_critical_damage_additional' type='hidden' value='@{critical_damage_additional}' />
+        <input name='attr_massive_critical_damage_additional' type='hidden' value='@{massive_critical_damage_additional}' />
         <input name='attr_weapon_roll' type='hidden' value='{{roll01_name=^{attack}}} {{roll01=[[1d20cs20cf1 + [@{weapon_proficiency_display}] @{weapon_strike}[@{text_modifier}] + (@{query_roll_bonus})[@{text_bonus}]]]}} {{roll01_type=attack}} {{roll01_info=@{weapon_traits}}} {{roll01_critical=1}}' />
         <input name='attr_damage_roll' type='hidden' value='{{roll02_name=^{damage}}} {{roll02=[[@{damage_dice_query}@{damage_dice_size} + @{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[WEAPON SPECIALIZATION] + @{damage_temporary}[TEMP] + @{damage_other}[OTHER] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}]]]}} {{roll02_type=damage}} {{roll02_info=@{damage_info}}}' />
+        <input name='attr_damage_critical_full_roll' type='hidden' value='@{damage_critical_roll} @{damage_massive_critical_roll}' />
         <input name='attr_damage_critical_roll' type='hidden' value='{{roll03_name=^{critical_damage}}} {{roll03=[[(@{damage_dice_query}@{damage_dice_size} + @{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[WEAPON SPECIALIZATION] + @{damage_temporary}[TEMP] + @{damage_other}[OTHER] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll03_type=critical-damage}} {{roll03_info=@{damage_info}}}' />
-        <input name='attr_damage_additional_roll' type='hidden' value='{{roll04_name=^{damage_additional}}} {{roll04=@{damage_additional}}} {{roll04_type=damage}}' />
+        <input name='attr_damage_massive_critical_roll' type='hidden' value='{{roll04_name=^{massive_critical_damage}}} {{roll04=[[@{damage_dice_query}*@{damage_dice_size_num} + @{damage_dice_query}@{damage_dice_size} + (@{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[WEAPON SPECIALIZATION] + @{damage_temporary}[TEMP] + @{damage_other}[OTHER] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll04_type=critical-damage}} {{roll04_info=@{damage_info}}}' />
+        <input name='attr_damage_additional_full_roll' type='hidden' value='@{damage_additional_roll} @{damage_additional_critical_roll} @{damage_additional_massive_critical_roll}' />
+        <input name='attr_damage_additional_roll' type='hidden' value='{{roll05_name=^{damage_additional}}} {{roll05=@{damage_additional}}} {{roll05_type=damage}}' />
+        <input name='attr_damage_additional_critical_full_roll' type='hidden' value='@{damage_additional_critical_roll} @{damage_additional_massive_critical_roll}' />
+        <input name='attr_damage_additional_critical_roll' type='hidden' value='{{roll06_name=^{critical_damage_additional}}} {{roll06=@{critical_damage_additional}}} {{roll06_type=critical-damage}}' />
+        <input name='attr_damage_additional_massive_critical_roll' type='hidden' value='{{roll07_name=^{massive_critical_damage_additional}}} {{roll07=@{massive_critical_damage_additional}}} {{roll07_type=critical-damage}}' />
         <input name="attr_weapon_proficiency_display" type="hidden" value ="" />
         <!-- Optional Critical Damage handling -->
-        <button name='roll_CRITICAL_DAMAGE' style='display: none;' type='roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_critical_roll}'></button>
+        <button name='roll_CRITICAL_DAMAGE' style='display: none;' type='roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_critical_full_roll} @{roll_additional_damage_critical}'></button>
         <input name='attr_roll_critical_damage_button' type='hidden' value='{{roll03misc=[^{roll} ^{critical_damage}](~repeating_melee-strikes_CRITICAL_DAMAGE) }}' />
-        <input name='attr_roll_critical_damage' type='hidden' value='@{damage_critical_roll}' />
+        <input name='attr_roll_critical_damage' type='hidden' value='@{damage_critical_full_roll}' />
+        <input name='attr_roll_additional_damage' type='hidden' value='@{damage_additional_full_roll}' />
+        <input name='attr_roll_additional_damage_critical' type='hidden' value='@{damage_additional_critical_full_roll}' />
         <!-- Show & hide hidden areas -->
         <input class='toggles' name='attr_toggles' type='hidden' value='display,settings,' />
         <div class='grid display'>
@@ -1387,7 +1398,7 @@
                 y
             </button>
             <span class='sublabel darkred' data-i18n='weapon'>weapon</span>
-            <button class='display-weapon' data-i18n-title='weapon_name_display_attack_and_damage_roll' name='roll_ATTACK-DAMAGE' title='weapon name display & attack and damage roll' type='roll'  value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{weapon_roll} @{damage_roll} @{roll_critical_damage} @{damage_additional_roll}'>
+            <button class='display-weapon' data-i18n-title='weapon_name_display_attack_and_damage_roll' name='roll_ATTACK-DAMAGE' title='weapon name display & attack and damage roll' type='roll'  value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{weapon_roll} @{damage_roll} @{roll_critical_damage} @{roll_additional_damage}'>
                 <span name='attr_weapon'></span>
             </button>
             <button data-i18n-title='show_or_hide_weapon_notes' name='act_collapse' title='show or hide weapon notes' type='action'>
@@ -1398,7 +1409,7 @@
             <button class='display-attack' data-i18n-title='weapon_attack_display_attack_and_attack_only_roll' name='roll_ATTACK' title='weapon attack display & attack only roll' type='roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{weapon_roll}'>
                 <span class='weapon' name='attr_weapon_display'></span>
             </button>
-            <button data-i18n-title='weapon_damage_display_and_damage_only_roll' class='display-damage' name='roll_DAMAGE' title='weapon damage display & damage only roll' type='roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_roll} @{roll_critical_damage} @{damage_additional_roll}'>
+            <button data-i18n-title='weapon_damage_display_and_damage_only_roll' class='display-damage' name='roll_DAMAGE' title='weapon damage display & damage only roll' type='roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_roll} @{roll_critical_damage} @{roll_additional_damage}'>
                 <span class='weapon' name='attr_damage_display'></span>
             </button>
             <span class='collapse' name='attr_weapon_notes'></span>
@@ -1532,15 +1543,25 @@
         <input name='attr_damage_display' type='hidden' value='0' />
         <input name='attr_damage_info' type='hidden' value='' />
         <input name='attr_damage_dice_query' type='hidden' value='@{damage_dice}' />
-        <input name='attr_weapon_roll' type='hidden' value='{{roll01_name=^{attack}}} {{roll01=[[1d20cs20cf1 + [@{weapon_proficiency_display}] @{weapon_strike}[@{text_modifier}] + (@{query_roll_bonus})[@{text_bonus}]]]}} {{roll01_type=attack}} {{roll01_info=@{weapon_traits}}} {{roll01_critical=1}}' />
+        <input name='attr_damage_dice_size_num' type='hidden' value='@{damage_dice_size_num}' />
+        <input name='attr_critical_damage_additional' type='hidden' value='@{critical_damage_additional}' />
+        <input name='attr_massive_critical_damage_additional' type='hidden' value='@{massive_critical_damage_additional}' />        <input name='attr_weapon_roll' type='hidden' value='{{roll01_name=^{attack}}} {{roll01=[[1d20cs20cf1 + [@{weapon_proficiency_display}] @{weapon_strike}[@{text_modifier}] + (@{query_roll_bonus})[@{text_bonus}]]]}} {{roll01_type=attack}} {{roll01_info=@{weapon_traits}}} {{roll01_critical=1}}' />
         <input name='attr_damage_roll' type='hidden' value='{{roll02_name=^{damage}}} {{roll02=[[@{damage_dice_query}@{damage_dice_size} + @{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[WEAPON SPECIALIZATION] + @{damage_temporary}[TEMP] + @{damage_other}[OTHER] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}]]]}} {{roll02_type=damage}} {{roll02_info=@{damage_info}}}' />
+        <input name='attr_damage_critical_full_roll' type='hidden' value='@{damage_critical_roll} @{damage_massive_critical_roll}' />
         <input name='attr_damage_critical_roll' type='hidden' value='{{roll03_name=^{critical_damage}}} {{roll03=[[(@{damage_dice_query}@{damage_dice_size} + @{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[WEAPON SPECIALIZATION] + @{damage_temporary}[TEMP] + @{damage_other}[OTHER] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll03_type=critical-damage}} {{roll03_info=@{damage_info}}}' />
-        <input name='attr_damage_additional_roll' type='hidden' value='{{roll04_name=^{damage_additional}}} {{roll04=@{damage_additional}}} {{roll04_type=damage}}' />
+        <input name='attr_damage_massive_critical_roll' type='hidden' value='{{roll04_name=^{massive_critical_damage}}} {{roll04=[[@{damage_dice_query}*@{damage_dice_size_num} + @{damage_dice_query}@{damage_dice_size} + (@{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[WEAPON SPECIALIZATION] + @{damage_temporary}[TEMP] + @{damage_other}[OTHER] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll04_type=critical-damage}} {{roll04_info=@{damage_info}}}' />
+        <input name='attr_damage_additional_full_roll' type='hidden' value='@{damage_additional_roll} @{damage_additional_critical_roll} @{damage_additional_massive_critical_roll}' />
+        <input name='attr_damage_additional_roll' type='hidden' value='{{roll05_name=^{damage_additional}}} {{roll05=@{damage_additional}}} {{roll05_type=damage}}' />
+        <input name='attr_damage_additional_critical_full_roll' type='hidden' value='@{damage_additional_critical_roll} @{damage_additional_massive_critical_roll}' />
+        <input name='attr_damage_additional_critical_roll' type='hidden' value='{{roll06_name=^{critical_damage_additional}}} {{roll06=@{critical_damage_additional}}} {{roll06_type=critical-damage}}' />
+        <input name='attr_damage_additional_massive_critical_roll' type='hidden' value='{{roll07_name=^{massive_critical_damage_additional}}} {{roll07=@{massive_critical_damage_additional}}} {{roll07_type=critical-damage}}' />
         <input name="attr_weapon_proficiency_display" type="hidden" value ="" />
         <!-- Optional Critical Damage handling -->
-        <button name='roll_CRITICAL_DAMAGE' style='display: none;' type='roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_critical_roll}'></button>
+        <button name='roll_CRITICAL_DAMAGE' style='display: none;' type='roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_critical_full_roll} @{roll_additional_damage_critical}'></button>
         <input name='attr_roll_critical_damage_button' type='hidden' value='{{roll03misc=[^{roll} ^{critical_damage}](~repeating_ranged-strikes_CRITICAL_DAMAGE) }}' />
-        <input name='attr_roll_critical_damage' type='hidden' value='@{damage_critical_roll}' />
+        <input name='attr_roll_critical_damage' type='hidden' value='@{damage_critical_full_roll}' />
+        <input name='attr_roll_additional_damage' type='hidden' value='@{damage_additional_full_roll}' />
+        <input name='attr_roll_additional_damage_critical' type='hidden' value='@{damage_additional_critical_full_roll}' />
         <!-- Show & hide hidden areas -->
         <input class='toggles' name='attr_toggles' type='hidden' value='display,settings,' />
         <div class='grid display'>
@@ -1548,7 +1569,7 @@
                 y
             </button>
             <span class='sublabel darkred' data-i18n='weapon'>weapon</span>
-            <button data-i18n-title='weapon_name_display_attack_and_damage_roll' class='display-weapon' name='roll_ATTACK-DAMAGE' type='roll' title='weapon name display & attack and damage roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{info01_name=^{range}}} {{info01=@{weapon_range}}} {{notes=@{weapon_notes}}} @{weapon_roll} @{damage_roll} @{roll_critical_damage} @{damage_additional_roll}'>
+            <button data-i18n-title='weapon_name_display_attack_and_damage_roll' class='display-weapon' name='roll_ATTACK-DAMAGE' type='roll' title='weapon name display & attack and damage roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{info01_name=^{range}}} {{info01=@{weapon_range}}} {{notes=@{weapon_notes}}} @{weapon_roll} @{damage_roll} @{roll_critical_damage} @{roll_additional_damage}'>
                 <span name='attr_weapon'></span>
             </button>
             <button data-i18n-title='show_or_hide_weapon_notes' name='act_collapse' title='show or hide weapon notes' type='action'>
@@ -1559,7 +1580,7 @@
             <button class='display-attack' data-i18n-title='weapon_attack_display_attack_and_attack_only_roll' name='roll_ATTACK' type='roll' title='weapon attack display & attack only roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{info01_name=^{range}}} {{info01=@{weapon_range}}} {{notes=@{weapon_notes}}} @{weapon_roll}'>
                 <span class='weapon' name='attr_weapon_display'></span>
             </button>
-            <button class='display-damage' data-i18n-title='weapon_damage_display_and_damage_only_roll' name='roll_DAMAGE' title='weapon damage display & damage only roll' type='roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_roll} @{roll_critical_damage} @{damage_additional_roll}'>
+            <button class='display-damage' data-i18n-title='weapon_damage_display_and_damage_only_roll' name='roll_DAMAGE' title='weapon damage display & damage only roll' type='roll' value='@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_roll} @{roll_critical_damage} @{roll_additional_damage}'>
                 <span class='weapon' name='attr_damage_display'></span>
             </button>
             <span class='collapse' name='attr_weapon_notes'></span>
@@ -3002,6 +3023,42 @@
                 </div>
             {{/roll04}}
             {{#roll04misc}}<div class="template-row">{{roll04misc}}</div>{{/roll04misc}}
+            {{#roll05}}
+                <div class="template-row {{roll05_type}}">
+                    {{#roll05_name}}
+                        <span class="template-roll-name {{roll05_type}}">{{roll05_name}}</span>
+                    {{/roll05_name}}
+                    {{roll05}}
+                    {{#roll05_info}}
+                        <span class="template-roll-info {{roll05_type}}">{{roll05_info}}</span>
+                    {{/roll05_info}}
+                </div>
+            {{/roll05}}
+            {{#roll05misc}}<div class="template-row">{{roll05misc}}</div>{{/roll05misc}}
+            {{#roll06}}
+                <div class="template-row {{roll06_type}}">
+                    {{#roll06_name}}
+                        <span class="template-roll-name {{roll06_type}}">{{roll06_name}}</span>
+                    {{/roll06_name}}
+                    {{roll06}}
+                    {{#roll06_info}}
+                        <span class="template-roll-info {{roll06_type}}">{{roll06_info}}</span>
+                    {{/roll06_info}}
+                </div>
+            {{/roll06}}
+            {{#roll06misc}}<div class="template-row">{{roll06misc}}</div>{{/roll06misc}}
+            {{#roll07}}
+                <div class="template-row {{roll07_type}}">
+                    {{#roll07_name}}
+                        <span class="template-roll-name {{roll07_type}}">{{roll07_name}}</span>
+                    {{/roll07_name}}
+                    {{roll07}}
+                    {{#roll07_info}}
+                        <span class="template-roll-info {{roll07_type}}">{{roll07_info}}</span>
+                    {{/roll07_info}}
+                </div>
+            {{/roll07}}
+            {{#roll07misc}}<div class="template-row">{{roll07misc}}</div>{{/roll07misc}}
             <!-- SAVES -->
             {{#savedc}}
                 <div class="template-row">
@@ -4094,6 +4151,7 @@ var modPf2 = (function () {
         let critoption = (values["roll_option_critical_damage"] || "auto"); // critical damage roll option
         if((values["sheet_type"] || "").toLowerCase() === "npc") {
             // Critical damage roll option handling
+            //TODO: take care of this
             switch (critoption) {
                 case "none":
                     update[`${id}_roll_critical_damage_npc`] = " "; // no critical damage roll
@@ -4122,11 +4180,14 @@ var modPf2 = (function () {
                 + (parseInt(values[`${id}_weapon_temporary`]) || 0);
             update[`${id}_weapon_strike`] = weapon_strike;
             // Damage: calculating dice and total fixed damage
-            update[`${id}_damage_dice`] = (parseInt(values[`${id}_damage_dice`]) || 0);
-            if((parseInt(values[`${id}_damage_dice_size`].replace(/[^\d]/gi,"")) || 0)) {
-                update[`${id}_damage_dice_size`] = `D${parseInt(values[`${id}_damage_dice_size`].replace(/[^\d]/gi,""))}`;
+            let damage_dice_count = (parseInt(values[`${id}_damage_dice`]) || 0)
+            update[`${id}_damage_dice`] = damage_dice_count;
+            let damage_dice_size = (parseInt(values[`${id}_damage_dice_size`].replace(/[^\d]/gi,"")) || 0);
+            if(damage_dice_size) {
+                update[`${id}_damage_dice_size`] = `D${damage_dice_size}`;
             } else {
                 update[`${id}_damage_dice_size`] = "D0";
+                damage_dice_size = 0;
             }
             let damage_dice = `${update[`${id}_damage_dice`]}${update[`${id}_damage_dice_size`]}`;
             let damage_bonus = damage_ability
@@ -4163,18 +4224,40 @@ var modPf2 = (function () {
             update[`${id}_damage_roll`] = `{{roll02_name=^{damage}}} {{roll02=[[@{damage_dice_query}@{damage_dice_size} + @{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[${(getTranslationByKey("weapon specialization") || "").toUpperCase()}] + @{damage_temporary}[${(getTranslationByKey("temp") || "").toUpperCase()}] + @{damage_other}[${(getTranslationByKey("other") || "").toUpperCase()}] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}]]]}} {{roll02_type=damage}} {{roll02_info=@{damage_info}}}`;
             update[`${id}_damage_critical_roll`] = `{{roll03_name=^{critical_damage}}} {{roll03=[[(@{damage_dice_query}@{damage_dice_size} + @{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[${(getTranslationByKey("weapon specialization") || "").toUpperCase()}] + @{damage_temporary}[${(getTranslationByKey("temp") || "").toUpperCase()}] + @{damage_other}[${(getTranslationByKey("other") || "").toUpperCase()}] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll03_type=critical-damage}} {{roll03_info=@{damage_info}}}`;
             // Critical damage roll option handling
+            update[`${id}_damage_dice_size_num`] = damage_dice_size;
             switch (critoption) {
                 case "none":
                     update[`${id}_roll_critical_damage`] = " "; // no critical damage roll
+                    update[`${id}_roll_additional_damage`] = "@{damage_additional_roll}"
                     break
                 case "button":
                     update[`${id}_roll_critical_damage`] = "@{roll_critical_damage_button}"; // chat button
+                    update[`${id}_roll_additional_damage`] = "@{damage_additional_roll}"
                     break
                 case "auto":
-                    update[`${id}_roll_critical_damage`] = "@{damage_critical_roll}"; // auto roll critical damage
+                    update[`${id}_roll_critical_damage`] = "@{damage_critical_full_roll}"; // auto roll critical damage
+                    update[`${id}_roll_additional_damage`] = "@{damage_additional_full_roll}"
                     break
                 default:
-                    update[`${id}_roll_critical_damage`] = "@{damage_critical_roll}"; // auto roll critical damage
+                    update[`${id}_roll_critical_damage`] = "@{damage_critical_full_roll}"; // auto roll critical damage
+                    update[`${id}_roll_additional_damage`] = "@{damage_additional_full_roll}"
+            }
+            let template = values[`${id}_damage_additional`];
+            if(template) {
+                let additionalCritical = template.replace(/\[\[/g, '[[(').replace(/\]\]/g, ')*2]]');
+                let additionalMassiveCritical = template.replace(/\[\[.+?\]\]/g, match => {
+                    let str = match.substr(2, match.length -4);
+                    return '[[' + str.replace(/[dD]/, '*') + '+' + str + ']]'
+                });
+                update[`${id}_critical_damage_additional`] = additionalCritical;
+                update[`${id}_massive_critical_damage_additional`] = additionalMassiveCritical;
+                update[`${id}_roll_additional_damage_critical`] = "@{damage_additional_critical_full_roll}";
+            }
+            else {
+                update[`${id}_critical_damage_additional`] = " ";
+                update[`${id}_massive_critical_damage_additional`] = " ";
+                update[`${id}_roll_additional_damage`] = " ";
+                update[`${id}_roll_additional_damage_critical`] = " ";
             }
         }
         return update;

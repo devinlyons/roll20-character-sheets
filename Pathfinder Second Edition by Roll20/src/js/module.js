@@ -978,6 +978,7 @@ var modPf2 = (function () {
         let critoption = (values["roll_option_critical_damage"] || "auto"); // critical damage roll option
         if((values["sheet_type"] || "").toLowerCase() === "npc") {
             // Critical damage roll option handling
+            //TODO: take care of this
             switch (critoption) {
                 case "none":
                     update[`${id}_roll_critical_damage_npc`] = " "; // no critical damage roll
@@ -1006,11 +1007,14 @@ var modPf2 = (function () {
                 + (parseInt(values[`${id}_weapon_temporary`]) || 0);
             update[`${id}_weapon_strike`] = weapon_strike;
             // Damage: calculating dice and total fixed damage
-            update[`${id}_damage_dice`] = (parseInt(values[`${id}_damage_dice`]) || 0);
-            if((parseInt(values[`${id}_damage_dice_size`].replace(/[^\d]/gi,"")) || 0)) {
-                update[`${id}_damage_dice_size`] = `D${parseInt(values[`${id}_damage_dice_size`].replace(/[^\d]/gi,""))}`;
+            let damage_dice_count = (parseInt(values[`${id}_damage_dice`]) || 0)
+            update[`${id}_damage_dice`] = damage_dice_count;
+            let damage_dice_size = (parseInt(values[`${id}_damage_dice_size`].replace(/[^\d]/gi,"")) || 0);
+            if(damage_dice_size) {
+                update[`${id}_damage_dice_size`] = `D${damage_dice_size}`;
             } else {
                 update[`${id}_damage_dice_size`] = "D0";
+                damage_dice_size = 0;
             }
             let damage_dice = `${update[`${id}_damage_dice`]}${update[`${id}_damage_dice_size`]}`;
             let damage_bonus = damage_ability
@@ -1047,18 +1051,40 @@ var modPf2 = (function () {
             update[`${id}_damage_roll`] = `{{roll02_name=^{damage}}} {{roll02=[[@{damage_dice_query}@{damage_dice_size} + @{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[${(getTranslationByKey("weapon specialization") || "").toUpperCase()}] + @{damage_temporary}[${(getTranslationByKey("temp") || "").toUpperCase()}] + @{damage_other}[${(getTranslationByKey("other") || "").toUpperCase()}] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}]]]}} {{roll02_type=damage}} {{roll02_info=@{damage_info}}}`;
             update[`${id}_damage_critical_roll`] = `{{roll03_name=^{critical_damage}}} {{roll03=[[(@{damage_dice_query}@{damage_dice_size} + @{damage_ability}[@{text_ability_modifier}] + @{damage_weapon_specialization}[${(getTranslationByKey("weapon specialization") || "").toUpperCase()}] + @{damage_temporary}[${(getTranslationByKey("temp") || "").toUpperCase()}] + @{damage_other}[${(getTranslationByKey("other") || "").toUpperCase()}] + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll03_type=critical-damage}} {{roll03_info=@{damage_info}}}`;
             // Critical damage roll option handling
+            update[`${id}_damage_dice_size_num`] = damage_dice_size;
             switch (critoption) {
                 case "none":
                     update[`${id}_roll_critical_damage`] = " "; // no critical damage roll
+                    update[`${id}_roll_additional_damage`] = "@{damage_additional_roll}"
                     break
                 case "button":
                     update[`${id}_roll_critical_damage`] = "@{roll_critical_damage_button}"; // chat button
+                    update[`${id}_roll_additional_damage`] = "@{damage_additional_roll}"
                     break
                 case "auto":
-                    update[`${id}_roll_critical_damage`] = "@{damage_critical_roll}"; // auto roll critical damage
+                    update[`${id}_roll_critical_damage`] = "@{damage_critical_full_roll}"; // auto roll critical damage
+                    update[`${id}_roll_additional_damage`] = "@{damage_additional_full_roll}"
                     break
                 default:
-                    update[`${id}_roll_critical_damage`] = "@{damage_critical_roll}"; // auto roll critical damage
+                    update[`${id}_roll_critical_damage`] = "@{damage_critical_full_roll}"; // auto roll critical damage
+                    update[`${id}_roll_additional_damage`] = "@{damage_additional_full_roll}"
+            }
+            let template = values[`${id}_damage_additional`];
+            if(template) {
+                let additionalCritical = template.replace(/\[\[/g, '[[(').replace(/\]\]/g, ')*2]]');
+                let additionalMassiveCritical = template.replace(/\[\[.+?\]\]/g, match => {
+                    let str = match.substr(2, match.length -4);
+                    return '[[' + str.replace(/[dD]/, '*') + '+' + str + ']]'
+                });
+                update[`${id}_critical_damage_additional`] = additionalCritical;
+                update[`${id}_massive_critical_damage_additional`] = additionalMassiveCritical;
+                update[`${id}_roll_additional_damage_critical`] = "@{damage_additional_critical_full_roll}";
+            }
+            else {
+                update[`${id}_critical_damage_additional`] = " ";
+                update[`${id}_massive_critical_damage_additional`] = " ";
+                update[`${id}_roll_additional_damage`] = " ";
+                update[`${id}_roll_additional_damage_critical`] = " ";
             }
         }
         return update;
