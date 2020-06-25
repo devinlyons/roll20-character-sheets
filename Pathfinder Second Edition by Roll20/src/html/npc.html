@@ -751,19 +751,30 @@
             <div class="npc-melee-strikes repeating">
                 <fieldset class="repeating_melee-strikes">
                     <input name="attr_damage_display_npc" type="hidden" value="@{weapon_strike_damage} @{weapon_strike_damage_type}" />
+                    <input name="attr_weapon_strike_damage_max" type="hidden" value="@{weapon_strike_damage_max}" />
+                    <input name="attr_weapon_strike_damage_additional_critical" type="hidden" value="@{weapon_strike_damage_additional_critical}" />
+                    <input name="attr_weapon_strike_damage_additional_massive_critical" type="hidden" value="@{weapon_strike_damage_additional_massive_critica}" />
                     <input name="attr_weapon_roll_npc" type="hidden" value="{{roll01_name=^{attack}}} {{roll01=[[1d20cs20cf1 + (@{weapon_strike}[@{text_modifier}]) + (@{query_roll_bonus})[@{text_bonus}]]]}} {{roll01_type=attack}} {{roll01_critical=1}}" />
                     <input name="attr_damage_roll_npc" type="hidden" value="{{roll02_name=^{damage}}} {{roll02=[[@{weapon_strike_damage} + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}]]]}} {{roll02_type=damage}} {{roll02_info=@{weapon_strike_damage_type}}}" />
+                    <input name="attr_damage_critical_full_roll_npc" type="hidden" value="@{damage_critical_roll_npc} @{damage_massive_critical_roll_npc}" />
                     <input name="attr_damage_critical_roll_npc" type="hidden" value="{{roll03_name=^{critical_damage}}} {{roll03=[[(@{weapon_strike_damage} + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll03_type=critical-damage}}" />
-                    <input name="attr_damage_additional_roll_npc" type="hidden" value="{{roll04_name=^{damage_additional}}} {{roll04=@{weapon_strike_damage_additional}}} {{roll04_type=damage}}" />
+                    <input name="attr_damage_massive_critical_roll_npc" type="hidden" value="{{roll04_name=^{massive_critical_damage}}} {{roll04=[[@{weapon_strike_damage_max} + @{weapon_strike_damage} + (@{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll03_type=critical-damage}}" />
+                    <input name="attr_damage_additional_full_roll_npc" type="hidden" value="@{damage_additional_roll_npc} @{damage_additional_critical_roll_npc} @{damage_additional_massive_critical_roll_npc}" />
+                    <input name="attr_damage_additional_roll_npc" type="hidden" value="{{roll05_name=^{damage_additional}}} {{roll05=@{weapon_strike_damage_additional}}} {{roll05_type=damage}}" />
+                    <input name="attr_damage_additional_critical_full_roll_npc" type="hidden" value="@{damage_additional_critical_roll_npc} @{damage_additional_massive_critical_roll_npc}" />
+                    <input name="attr_damage_additional_critical_roll_npc" type="hidden" value="{{roll06_name=^{critical_damage_additional}}} {{roll06=@{weapon_strike_damage_additional_critical}}} {{roll06_type=critical-damage}}" />
+                    <input name="attr_damage_additional_massive_critical_roll_npc" type="hidden" value="{{roll07_name=^{massive_critical_damage_additional}}} {{roll07=@{weapon_strike_damage_additional_massive_critical}}} {{roll07_type=critical-damage}}" />
                     <!-- Optional Critical Damage handling -->
-                    <button name="roll_CRITICAL_DAMAGE_NPC" style="display: none;" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_critical_roll_npc}"></button>
+                    <button name="roll_CRITICAL_DAMAGE_NPC" style="display: none;" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_critical_full_roll_npc} @{roll_additional_damage_critical_npc}"></button>
                     <input name="attr_roll_critical_damage_button_npc" type="hidden" value="{{roll03misc=[^{roll} ^{critical_damage}](~repeating_melee-strikes_CRITICAL_DAMAGE_NPC) }}" />
-                    <input name="attr_roll_critical_damage_npc" type="hidden" value="@{damage_critical_roll_npc}" />
+                    <input name="attr_roll_critical_damage_npc" type="hidden" value="@{damage_critical_full_roll_npc}" />
+                    <input name="attr_roll_additional_damage_npc" type="hidden" value="@{damage_additional_full_roll_npc}" />
+                    <input name="attr_roll_additional_damage_critical_npc" type="hidden" value="@{damage_additional_critical_full_roll_npc}" />
                     <!-- Show & hide hidden areas -->
                     <input class="toggles" name="attr_toggles" type="hidden" value="display,settings," />
                     <div class="npc-repeating-item">
                         <div>
-                            <button name="roll_ATTACK-DAMAGE-NPC" class="npc-roll" title="npc melee weapon name display & attack and damage roll" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{weapon_roll_npc} @{damage_roll_npc} @{roll_critical_damage_npc} @{damage_additional_roll_npc}">
+                            <button name="roll_ATTACK-DAMAGE-NPC" class="npc-roll" title="npc melee weapon name display & attack and damage roll" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{weapon_roll_npc} @{damage_roll_npc} @{roll_critical_damage_npc} @{roll_additional_damage_npc}">
                                 <span name="attr_weapon"></span>
                             </button>
                             <button name="roll_ATTACK-NPC" class="npc-roll" title="npc melee weapon attack display & attack only roll" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{weapon_roll_npc}">
@@ -771,7 +782,7 @@
                             </button>
                             <span class="npc-parenthesized-field" name="attr_weapon_traits"></span>
                             <span class="npc-row-title" data-i18n="damage">damage</span>
-                            <button name="roll_DAMAGE-NPC" class="npc-roll" title="npc melee weapon damage display & damage only roll" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_roll_npc} @{roll_critical_damage_npc} @{damage_additional_roll_npc}">
+                            <button name="roll_DAMAGE-NPC" class="npc-roll" title="npc melee weapon damage display & damage only roll" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{melee_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_roll_npc} @{roll_critical_damage_npc} @{roll_additional_damage_npc}">
                                 <span name="attr_weapon_strike_damage"></span>&nbsp;
                                 <span name="attr_weapon_strike_damage_type"></span>
                                 <span class="npc-dot-field" name="attr_weapon_strike_damage_additional"></span>
@@ -821,19 +832,30 @@
             <div class="npc-ranged-strikes repeating">
                 <fieldset class="repeating_ranged-strikes">
                     <input name="attr_damage_display_npc" type="hidden" value="@{weapon_strike_damage} @{weapon_strike_damage_type}" />
+                    <input name="attr_weapon_strike_damage_max" type="hidden" value="@{weapon_strike_damage_max}" />
+                    <input name="attr_weapon_strike_damage_additional_critical" type="hidden" value="@{weapon_strike_damage_additional_critical}" />
+                    <input name="attr_weapon_strike_damage_additional_massive_critical" type="hidden" value="@{weapon_strike_damage_additional_massive_critica}" />
                     <input name="attr_weapon_roll_npc" type="hidden" value="{{roll01_name=^{attack}}} {{roll01=[[1d20cs20cf1 + (@{weapon_strike}[@{text_modifier}]) + (@{query_roll_bonus})[@{text_bonus}]]]}} {{roll01_type=attack}} {{roll01_critical=1}}" />
                     <input name="attr_damage_roll_npc" type="hidden" value="{{roll02_name=^{damage}}} {{roll02=[[@{weapon_strike_damage} + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}]]]}} {{roll02_type=damage}} {{roll02_info=@{weapon_strike_damage_type}}}" />
+                    <input name="attr_damage_critical_full_roll_npc" type="hidden" value="@{damage_critical_roll_npc} @{damage_massive_critical_roll_npc}" />
                     <input name="attr_damage_critical_roll_npc" type="hidden" value="{{roll03_name=^{critical_damage}}} {{roll03=[[(@{weapon_strike_damage} + @{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll03_type=critical-damage}}" />
-                    <input name="attr_damage_additional_roll_npc" type="hidden" value="{{roll04_name=^{damage_additional}}} {{roll04=@{weapon_strike_damage_additional}}} {{roll04_type=damage}}" />
+                    <input name="attr_damage_massive_critical_roll_npc" type="hidden" value="{{roll04_name=^{massive_critical_damage}}} {{roll04=[[@{weapon_strike_damage_max} + @{weapon_strike_damage} + (@{query_roll_damage_bonus}[@{text_roll_damage_bonus}])*2]]}} {{roll03_type=critical-damage}}" />
+                    <input name="attr_damage_additional_full_roll_npc" type="hidden" value="@{damage_additional_roll_npc} @{damage_additional_critical_roll_npc} @{damage_additional_massive_critical_roll_npc}" />
+                    <input name="attr_damage_additional_roll_npc" type="hidden" value="{{roll05_name=^{damage_additional}}} {{roll05=@{weapon_strike_damage_additional}}} {{roll05_type=damage}}" />
+                    <input name="attr_damage_additional_critical_full_roll_npc" type="hidden" value="@{damage_additional_critical_roll_npc} @{damage_additional_massive_critical_roll_npc}" />
+                    <input name="attr_damage_additional_critical_roll_npc" type="hidden" value="{{roll06_name=^{critical_damage_additional}}} {{roll06=@{weapon_strike_damage_additional_critical}}} {{roll06_type=critical-damage}}" />
+                    <input name="attr_damage_additional_massive_critical_roll_npc" type="hidden" value="{{roll07_name=^{massive_critical_damage_additional}}} {{roll07=@{weapon_strike_damage_additional_massive_critical}}} {{roll07_type=critical-damage}}" />
                     <!-- Optional Critical Damage handling -->
-                    <button name="roll_CRITICAL_DAMAGE_NPC" style="display: none;" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_critical_roll_npc}"></button>
+                    <button name="roll_CRITICAL_DAMAGE_NPC" style="display: none;" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_critical_full_roll_npc} @{roll_additional_damage_critical_npc}"></button>
                     <input name="attr_roll_critical_damage_button_npc" type="hidden" value="{{roll03misc=[^{roll} ^{critical_damage}](~repeating_ranged-strikes_CRITICAL_DAMAGE_NPC) }}" />
-                    <input name="attr_roll_critical_damage_npc" type="hidden" value="@{damage_critical_roll_npc}" />
+                    <input name="attr_roll_critical_damage_npc" type="hidden" value="@{damage_critical_full_roll_npc}" />
+                    <input name="attr_roll_additional_damage_npc" type="hidden" value="@{damage_additional_full_roll_npc}" />
+                    <input name="attr_roll_additional_damage_critical_npc" type="hidden" value="@{damage_additional_critical_full_roll_npc}" />
                     <!-- Show & hide hidden areas -->
                     <input class="toggles" name="attr_toggles" type="hidden" value="display,settings," />
                     <div class="npc-repeating-item">
                         <div>
-                            <button class="npc-roll" name="roll_ATTACK-DAMAGE-NPC" title="npc range weapon name display & attack and damage roll" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} {{info01_name=^{range}}} {{info01=@{weapon_range}}} @{weapon_roll_npc} @{damage_roll_npc} @{roll_critical_damage_npc} @{damage_additional_roll_npc}">
+                            <button class="npc-roll" name="roll_ATTACK-DAMAGE-NPC" title="npc range weapon name display & attack and damage roll" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} {{info01_name=^{range}}} {{info01=@{weapon_range}}} @{weapon_roll_npc} @{damage_roll_npc} @{roll_critical_damage_npc} @{roll_additional_damage_npc}">
                                 <span name="attr_weapon"></span>
                             </button>
                             <button class="npc-roll" name="roll_ATTACK-NPC" title="npc range weapon attack display & attack only roll" type="roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} {{info01_name=^{range}}} {{info01=@{weapon_range}}} @{weapon_roll_npc}">
@@ -841,7 +863,7 @@
                             </button>
                             <span class="npc-parenthesized-field" name="attr_weapon_traits"></span>
                             <span class="npc-row-title" data-i18n="damage">damage</span>
-                            <button class="npc-roll" name="roll_DAMAGE-NPC" type="roll" title="npc range weapon damage display & damage only roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_roll_npc} @{roll_critical_damage_npc} @{damage_additional_roll_npc}">
+                            <button class="npc-roll" name="roll_DAMAGE-NPC" type="roll" title="npc range weapon damage display & damage only roll" value="@{whispertype} &{template:rolls} {{limit_height=@{roll_limit_height}}} {{charactername=@{character_name}}} {{header=@{weapon}}} {{subheader=^{ranged_strike}}} {{notes_show=@{roll_show_notes}}} {{notes=@{weapon_notes}}} @{damage_roll_npc} @{roll_critical_damage_npc} @{roll_additional_damage_npc}">
                                 <span name="attr_weapon_strike_damage"></span>&nbsp;
                                 <span name="attr_weapon_strike_damage_type"></span>
                                 <span class="npc-dot-field" name="attr_weapon_strike_damage_additional"></span>

@@ -20,7 +20,7 @@ var modPf2 = (function () {
         , "ac_fields": ["ability","ability_select","dc_rank","proficiency","item","temporary","dc_base","cap","shield_ac_bonus","shield_temporary"]
         , "hit_points": ["hit_points_ancestry","hit_points_class","hit_points_other","hit_points_item"]
         , "repeating_attacks": ["melee-strikes","ranged-strikes"]
-        , "attacks_fields": ["weapon","weapon_ability_select","weapon_ability","weapon_proficiency","weapon_rank","weapon_item","weapon_temporary","weapon_traits","damage_dice","damage_dice_size","damage_ability_select","damage_ability","damage_b","damage_p","damage_s","damage_weapon_specialization","damage_temporary","damage_other","damage_effects","damage_additional"]
+        , "attacks_fields": ["weapon","weapon_ability_select","weapon_ability","weapon_proficiency","weapon_rank","weapon_item","weapon_temporary","weapon_traits","damage_dice","damage_dice_size","damage_ability_select","damage_ability","damage_b","damage_p","damage_s","damage_weapon_specialization","damage_temporary","damage_other","damage_effects","damage_additional","weapon_strike_damage","weapon_strike_damage_additional"]
         , "perception": ["perception_ability_select","perception_ability","perception_rank","perception_proficiency","perception_item","perception_temporary"]
         , "class_dc": ["class_dc_key_ability_select","class_dc_key_ability","class_dc_proficiency","class_dc_rank","class_dc_item","class_dc_temporary"]
         , "spell_attack": ["spell_attack_key_ability_select","spell_attack_key_ability", "spell_attack_rank","spell_attack_proficiency","spell_attack_temporary"]
@@ -977,20 +977,42 @@ var modPf2 = (function () {
         let update = {};
         let critoption = (values["roll_option_critical_damage"] || "auto"); // critical damage roll option
         if((values["sheet_type"] || "").toLowerCase() === "npc") {
+            let strikeDamage = values[`${id}_weapon_strike_damage`];
+            update[`${id}_weapon_strike_damage_max`] = eval(strikeDamage.replace(/[dD]/g, '*'));
             // Critical damage roll option handling
-            //TODO: take care of this
             switch (critoption) {
                 case "none":
                     update[`${id}_roll_critical_damage_npc`] = " "; // no critical damage roll
+                    update[`${id}_roll_additional_damage_npc`] = "@{damage_additional_roll_npc}";
                     break
                 case "button":
                     update[`${id}_roll_critical_damage_npc`] = "@{roll_critical_damage_button_npc}"; // chat button
+                    update[`${id}_roll_additional_damage_npc`] = "@{damage_additional_roll_npc}";
                     break
                 case "auto":
-                    update[`${id}_roll_critical_damage_npc`] = "@{damage_critical_roll_npc}"; // auto roll critical damage
+                    update[`${id}_roll_critical_damage_npc`] = "@{damage_critical_full_roll_npc}"; // auto roll critical damage
+                    update[`${id}_roll_additional_damage_npc`] = "@{damage_additional_full_roll_npc}";
                     break
                 default:
-                    update[`${id}_roll_critical_damage_npc`] = "@{damage_critical_roll_npc}"; // auto roll critical damage
+                    update[`${id}_roll_critical_damage_npc`] = "@{damage_critical_full_roll_npc}"; // auto roll critical damage
+                    update[`${id}_roll_additional_damage_npc`] = "@{damage_additional_full_roll_npc}";
+            }
+            let template = values[`${id}_weapon_strike_damage_additional`];
+            if(template) {
+                let additionalCritical = template.replace(/\[\[/g, '[[(').replace(/\]\]/g, ')*2]]');
+                let additionalMassiveCritical = template.replace(/\[\[.+?\]\]/g, match => {
+                    let str = match.substr(2, match.length -4);
+                    return '[[' + str.replace(/[dD]/, '*') + '+' + str + ']]'
+                });
+                update[`${id}_weapon_strike_damage_additional_critical`] = additionalCritical;
+                update[`${id}_weapon_strike_damage_additional_massive_critical`] = additionalMassiveCritical;
+                update[`${id}_roll_additional_damage_critical_npc`] = "@{damage_additional_critical_full_roll_npc}";
+            }
+            else {
+                update[`${id}_weapon_strike_damage_additional_critical`] = " ";
+                update[`${id}_weapon_strike_damage_additional_massive_critical`] = " ";
+                update[`${id}_roll_additional_damage_critical_npc`] = " ";
+                update[`${id}_roll_additional_damage_npc`] = " ";
             }
         } else { // PC
             // Ability modifiers handling
